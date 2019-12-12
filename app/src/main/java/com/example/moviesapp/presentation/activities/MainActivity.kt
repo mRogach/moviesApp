@@ -1,7 +1,8 @@
-package com.example.moviesapp
+package com.example.moviesapp.presentation.activities
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import com.example.moviesapp.R
 
 class MainActivity : AppCompatActivity() {
 
