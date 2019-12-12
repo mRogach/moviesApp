@@ -1,13 +1,14 @@
 package com.example.moviesapp.presentation.activities
 
-import android.os.Bundle
-import androidx.appcompat.app.AppCompatActivity
 import com.example.moviesapp.R
+import com.example.moviesapp.presentation.basics.BaseActivity
 
-class MainActivity : AppCompatActivity() {
+/**
+ * Created by
+ * Mykhailo on 12/12/2019.
+ */
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
-    }
+class MainActivity : BaseActivity() {
+
+    override fun getLayoutId() = R.layout.activity_main
 }
