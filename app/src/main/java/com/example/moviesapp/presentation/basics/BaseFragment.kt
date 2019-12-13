@@ -1,15 +1,15 @@
 package com.example.moviesapp.presentation.basics
 
 import androidx.annotation.IdRes
-import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
+import dagger.android.support.DaggerFragment
 
 /**
  * Created by
  * Mykhailo on 12/12/2019.
  */
 
-abstract class BaseFragment : Fragment() {
+abstract class BaseFragment : DaggerFragment() {
 
     protected fun showFragmentInCurrentManager(
         @IdRes containerId: Int, fragmentToShow: BaseFragment?,

@@ -13,16 +13,7 @@ import com.bumptech.glide.request.BaseRequestOptions
  */
 
 
-inline fun <reified T : ViewModel> Fragment.prepareViewModel(body: T.() -> Unit): T {
-    val vm = ViewModelProviders.of(this)[T::class.java]
-    vm.body()
-    return vm
-}
-
-inline fun <reified T : ViewModel> Fragment.prepareViewModel(
-    factory: ViewModelProvider.Factory?,
-    body: T.() -> Unit
-): T {
+inline fun <reified T : ViewModel> Fragment.createViewModel(factory: ViewModelProvider.Factory, body: T.() -> Unit): T {
     val vm = ViewModelProviders.of(this, factory)[T::class.java]
     vm.body()
     return vm

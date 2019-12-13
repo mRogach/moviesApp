@@ -12,7 +12,7 @@ import javax.inject.Singleton
  * Mykhailo on 12/12/2019.
  */
 
-@Module(includes = [])
+@Module(includes = [MoviesDataSourceModule::class])
 class AppModule {
 
     @Singleton

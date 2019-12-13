@@ -24,7 +24,7 @@ abstract class BaseRestClient {
 
     fun getRetrofitBuilder(): Retrofit.Builder {
         return Retrofit.Builder()
-            .baseUrl("http://18.196.7.202/")
+            .baseUrl("https://api.themoviedb.org/3/")
             .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
             .addConverterFactory(GsonConverterFactory.create(Gson()))
     }

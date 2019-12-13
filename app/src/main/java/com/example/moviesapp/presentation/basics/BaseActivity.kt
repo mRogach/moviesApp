@@ -3,10 +3,10 @@ package com.example.moviesapp.presentation.basics
 import android.os.Bundle
 import androidx.annotation.IdRes
 import androidx.annotation.LayoutRes
-import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import com.example.moviesapp.R
+import dagger.android.support.DaggerAppCompatActivity
 
 
 /**
@@ -14,7 +14,7 @@ import com.example.moviesapp.R
  * Mykhailo on 12/12/2019.
  */
 
-abstract class BaseActivity : AppCompatActivity() {
+abstract class BaseActivity : DaggerAppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

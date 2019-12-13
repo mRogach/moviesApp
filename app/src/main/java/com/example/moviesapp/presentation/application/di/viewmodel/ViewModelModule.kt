@@ -15,9 +15,12 @@
  */
 package com.example.moviesapp.presentation.application.di.viewmodel
 
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import com.example.moviesapp.presentation.fragments.movies.MoviesVM
 import dagger.Binds
 import dagger.Module
+import dagger.multibindings.IntoMap
 
 /**
  * Created by
@@ -29,8 +32,8 @@ abstract class ViewModelModule {
     @Binds
     internal abstract fun bindViewModelFactory(factory: ViewModelFactory): ViewModelProvider.Factory
 
-//    @Binds
-//    @IntoMap
-//    @ViewModelKey(SplashViewModel::class)
-//    abstract fun bindsSplashViewModel(splashViewModel: SplashViewModel): ViewModel
+    @Binds
+    @IntoMap
+    @ViewModelKey(MoviesVM::class)
+    abstract fun bindsMoviesVM(moviesVM: MoviesVM): ViewModel
 }

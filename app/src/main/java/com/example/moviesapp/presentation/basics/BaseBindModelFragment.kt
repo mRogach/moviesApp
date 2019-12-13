@@ -7,6 +7,9 @@ import android.view.ViewGroup
 import androidx.annotation.LayoutRes
 import androidx.databinding.DataBindingUtil
 import androidx.databinding.ViewDataBinding
+import androidx.lifecycle.ViewModelProvider
+import com.example.moviesapp.BR
+import javax.inject.Inject
 
 /**
  * Created by
@@ -18,9 +21,17 @@ abstract class BaseBindModelFragment<T : ViewDataBinding, M : BaseViewModel> : B
     protected lateinit var binding: T
     protected lateinit var viewModel: M
 
+    @Inject
+    lateinit var viewModelFactory: ViewModelProvider.Factory
+
+    @LayoutRes
+    abstract fun getLayoutId(): Int
+
+    abstract fun initViewModel(): M
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        if (!recreateViewModel()) prepareViewModel()
+        viewModel = initViewModel()
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -30,24 +41,9 @@ abstract class BaseBindModelFragment<T : ViewDataBinding, M : BaseViewModel> : B
     }
 
     private fun performDataBinding() {
-        if (recreateViewModel()) prepareViewModel()
         binding.lifecycleOwner = viewLifecycleOwner
-//        binding.setVariable(BR.viewModel, viewModel)
+        binding.setVariable(BR.viewModel, viewModel)
         binding.executePendingBindings()
     }
 
-    private fun prepareViewModel() {
-        viewModel = initViewModel().apply {
-            observe(apiErrorHandler) {  }
-            observe(progressHandler) {  }
-        }
-    }
-
-    @LayoutRes
-    abstract fun getLayoutId(): Int
-
-    abstract fun initViewModel(): M
-
-    //If you wait date from live observer's
-    open fun recreateViewModel() = true
 }

@@ -1,6 +1,7 @@
 package com.example.moviesapp.presentation.basics
 
 import android.content.Context
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.moviesapp.R
 import com.example.moviesapp.data.api.ErrorsHandler
@@ -16,14 +17,16 @@ import io.reactivex.schedulers.Schedulers
  * Mykhailo on 12/12/2019.
  */
 
-abstract class BaseViewModel(private val context: Context) : ViewModel() {
+open class BaseViewModel(private val context: Context) : ViewModel() {
 
-    val apiErrorHandler = SingleFireLiveData<String>()
-    val progressHandler = SingleFireLiveData<Boolean>()
+    var isNetworkError = MutableLiveData<Boolean>()
+    var isContentError = MutableLiveData<Boolean>()
+    var isLoading = MutableLiveData<Boolean>()
+    var errorMessage = MutableLiveData<String>()
 
-    private val disposable = CompositeDisposable()
+    protected val disposable = CompositeDisposable()
 
-    private fun convertError(apiError: Triple<ErrorsHandler.ApiError, String?, Int?>): Pair<String?, Int?> {
+    fun convertError(apiError: Triple<ErrorsHandler.ApiError, String?, Int?>): Pair<String?, Int?> {
         val resources = context.resources
         return Pair(
             when (apiError.first) {
@@ -34,9 +37,6 @@ abstract class BaseViewModel(private val context: Context) : ViewModel() {
             }, apiError.third
         )
     }
-
-    protected fun notifyErrorMsg(error: Pair<String?, Int?>) = apiErrorHandler.postValue(error.first)
-    protected fun notifyProgress(isProgress: Boolean) = progressHandler.postValue(isProgress)
 
     private fun <T> onSuccess(s: T, caller: (T) -> Unit) {
         caller.invoke(s)
