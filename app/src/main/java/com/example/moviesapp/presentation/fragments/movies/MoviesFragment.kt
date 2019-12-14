@@ -27,14 +27,16 @@ class MoviesFragment : BaseBindModelFragment<FragmentMoviesBinding, MoviesVM>() 
     override fun getLayoutId() = R.layout.fragment_movies
 
     override fun initViewModel(): MoviesVM {
-        return createViewModel(viewModelFactory) {
-            startConfigureLoad()
-            listenConnectivity()
-        }
+        return createViewModel(viewModelFactory) {}
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        if (savedInstanceState == null) {
+            viewModel.startConfigureLoad()
+            viewModel.listenConnectivity()
+        }
 
         initAdapter()
         observe()

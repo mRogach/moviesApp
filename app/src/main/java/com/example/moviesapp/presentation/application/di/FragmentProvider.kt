@@ -1,6 +1,5 @@
 package com.example.moviesapp.presentation.application.di
 
-import com.example.moviesapp.presentation.basics.BaseFragment
 import com.example.moviesapp.presentation.fragments.movies.MoviesFragment
 import dagger.Module
 import dagger.android.ContributesAndroidInjector
@@ -12,9 +11,6 @@ import dagger.android.ContributesAndroidInjector
 
 @Module
 abstract class FragmentProvider {
-
-    @ContributesAndroidInjector()
-    abstract fun bindBaseFragment(): BaseFragment
 
     @ContributesAndroidInjector()
     abstract fun bindMoviesFragment(): MoviesFragment

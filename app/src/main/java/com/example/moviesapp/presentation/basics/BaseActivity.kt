@@ -5,7 +5,6 @@ import androidx.annotation.IdRes
 import androidx.annotation.LayoutRes
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
-import com.example.moviesapp.R
 import dagger.android.support.DaggerAppCompatActivity
 
 
@@ -19,15 +18,6 @@ abstract class BaseActivity : DaggerAppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(getLayoutId())
-    }
-
-    override fun onBackPressed() {
-        val fragment = supportFragmentManager.findFragmentById(R.id.fragmentContainer)
-        if (fragment != null && fragment is BaseFragment) {
-            super.onBackPressed()
-        } else {
-            super.onBackPressed()
-        }
     }
 
     protected fun replaceFragment(

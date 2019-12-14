@@ -40,10 +40,6 @@ class MoviesVM @Inject constructor(
         return moviesDataSourceFactory.sourceLiveData.value?.initialLoadStateLiveData
     }
 
-    fun paginatedLoadState(): MutableLiveData<ResultResponse.Status>? {
-        return moviesDataSourceFactory.sourceLiveData.value?.paginatedNetworkStateLiveData
-    }
-
     fun getInitLoadError(): MutableLiveData<Triple<ErrorsHandler.ApiError, String?, Int?>>? {
         return moviesDataSourceFactory.sourceLiveData.value?.initialLoadErrorLiveData
     }

@@ -9,6 +9,7 @@ import androidx.databinding.DataBindingUtil
 import androidx.databinding.ViewDataBinding
 import androidx.lifecycle.ViewModelProvider
 import com.example.moviesapp.BR
+import dagger.android.support.DaggerFragment
 import javax.inject.Inject
 
 /**
@@ -16,7 +17,7 @@ import javax.inject.Inject
  * Mykhailo on 12/12/2019.
  */
 
-abstract class BaseBindModelFragment<T : ViewDataBinding, M : BaseViewModel> : BaseFragment() {
+abstract class BaseBindModelFragment<T : ViewDataBinding, M : BaseViewModel> : DaggerFragment() {
 
     protected lateinit var binding: T
     protected lateinit var viewModel: M

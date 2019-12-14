@@ -5,7 +5,6 @@ import com.example.moviesapp.R
 import com.example.moviesapp.presentation.basics.BaseActivity
 import com.example.moviesapp.presentation.fragments.movies.MoviesFragment
 import kotlinx.android.synthetic.main.activity_main.*
-import kotlinx.android.synthetic.main.toolbar.view.*
 
 /**
  * Created by
@@ -19,7 +18,8 @@ class MainActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        setSupportActionBar(toolbarLayout.toolbar).apply { title = "Popular films" }
+        setSupportActionBar(toolbar)
+        supportActionBar?.title = "Popular films"
 
         if (savedInstanceState == null) {
             replaceFragment(R.id.fragmentContainer, MoviesFragment(), false)
