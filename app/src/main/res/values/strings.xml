@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">MoviesApp</string>
+    <string name="app_name">StackApp</string>
     <string name="error_msg_timeout">Timeout</string>
     <string name="error_msg_unknown">Unknown</string>
     <string name="error_msg_connection">Network Connection Error</string>
