@@ -6,10 +6,13 @@ import com.example.stackapp.data.api.ErrorsHandler
 import com.example.stackapp.data.api.StackAppRestClient
 import com.example.stackapp.data.models.ResultResponse
 import com.example.stackapp.data.models.question.Question
+import com.example.stackapp.presentation.utils.PATTERN
+import com.example.stackapp.presentation.utils.toDateString
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
+import java.util.concurrent.TimeUnit
 
 /**
  * Created by
@@ -29,13 +32,19 @@ class QuestionsDataSource constructor(
     private val compositeDisposable = CompositeDisposable()
     private var page: Int = 1
 
-    private fun onQuestionsFetched(questions: List<Question>, callback: LoadInitialCallback<Int, Question>) {
+    private fun onQuestionsFetched(
+        questions: List<Question>,
+        callback: LoadInitialCallback<Int, Question>
+    ) {
         initialLoadStateLiveData.postValue(ResultResponse.Status.SUCCESS)
         page = page.inc()
         callback.onResult(questions, page, page.dec())
     }
 
-    private fun onNextQuestionsFetched(questions: List<Question>, callback: LoadCallback<Int, Question>) {
+    private fun onNextQuestionsFetched(
+        questions: List<Question>,
+        callback: LoadCallback<Int, Question>
+    ) {
         paginatedNetworkStateLiveData.postValue(ResultResponse.Status.SUCCESS)
         page = page.inc()
         callback.onResult(questions, page)
@@ -59,22 +68,22 @@ class QuestionsDataSource constructor(
         initialLoadStateLiveData.postValue(ResultResponse.Status.LOADING)
 
         val loadFirstQuestions = getQuestions()
-                .subscribe {
-                    when (it.status) {
-                        ResultResponse.Status.ERROR -> {
-                            initialLoadErrorLiveData.postValue(it.error?.let { it1 ->
-                                ErrorsHandler.parseNetworkError(
-                                    it1
-                                )
-                            })
-                            initialLoadStateLiveData.postValue(ResultResponse.Status.ERROR)
-                        }
-                        ResultResponse.Status.SUCCESS -> {
-                            it.data?.let { it1 -> onQuestionsFetched(it1, callback) }
-                            initialLoadStateLiveData.postValue(ResultResponse.Status.SUCCESS)
-                        }
+            .subscribe {
+                when (it.status) {
+                    ResultResponse.Status.ERROR -> {
+                        initialLoadErrorLiveData.postValue(it.error?.let { it1 ->
+                            ErrorsHandler.parseNetworkError(
+                                it1
+                            )
+                        })
+                        initialLoadStateLiveData.postValue(ResultResponse.Status.ERROR)
+                    }
+                    ResultResponse.Status.SUCCESS -> {
+                        it.data?.let { it1 -> onQuestionsFetched(it1, callback) }
+                        initialLoadStateLiveData.postValue(ResultResponse.Status.SUCCESS)
                     }
                 }
+            }
         compositeDisposable.add(loadFirstQuestions)
     }
 
@@ -82,25 +91,32 @@ class QuestionsDataSource constructor(
         paginatedNetworkStateLiveData.postValue(ResultResponse.Status.LOADING)
 
         val loadNextQuestions = getQuestions()
-                .subscribe {
-                    when (it.status) {
-                        ResultResponse.Status.ERROR -> nextLoadErrorLiveData.postValue(it.error?.let { it1 ->
-                            ErrorsHandler.parseNetworkError(
-                                it1
-                            )
-                        })
-                        ResultResponse.Status.SUCCESS -> {
-                            it.data?.let { it1 -> onNextQuestionsFetched(it1, callback) }
-                            paginatedNetworkStateLiveData.postValue(ResultResponse.Status.SUCCESS)
-                        }
+            .subscribe {
+                when (it.status) {
+                    ResultResponse.Status.ERROR -> nextLoadErrorLiveData.postValue(it.error?.let { it1 ->
+                        ErrorsHandler.parseNetworkError(
+                            it1
+                        )
+                    })
+                    ResultResponse.Status.SUCCESS -> {
+                        it.data?.let { it1 -> onNextQuestionsFetched(it1, callback) }
+                        paginatedNetworkStateLiveData.postValue(ResultResponse.Status.SUCCESS)
                     }
                 }
+            }
         compositeDisposable.add(loadNextQuestions)
     }
 
     private fun getQuestions(): Observable<ResultResponse<List<Question>>> {
         return stackAppRestClient.stackService.getQuestions(tag, page, "stackoverflow")
-            .map { t -> ResultResponse.success(t.items) }
+            .map { t ->
+                ResultResponse.success(t.items.map {
+                    it.apply {
+                        it.dateForUI =
+                            TimeUnit.SECONDS.toMillis(it.creationDate).toDateString(PATTERN)
+                    }
+                })
+            }
             .onErrorReturn { t -> ResultResponse.error(t) }
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())

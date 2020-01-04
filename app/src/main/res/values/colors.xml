@@ -1,9 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">@color/lightishBlue</color>
-    <color name="colorPrimaryDark">@color/lightishBlueDark</color>
-    <color name="colorAccent">@color/lightishBlue</color>
+    <color name="colorPrimary">#e8edfd</color>
+    <color name="colorPrimaryDark">#C8CFE2</color>
+    <color name="colorAccent">#e8edfd</color>
 
-    <color name="lightishBlue">#4d74ed</color>
-    <color name="lightishBlueDark">#31488D</color>
 </resources>

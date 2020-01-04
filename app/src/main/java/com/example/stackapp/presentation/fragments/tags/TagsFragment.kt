@@ -2,6 +2,7 @@ package com.example.stackapp.presentation.fragments.tags
 
 import android.os.Bundle
 import android.view.View
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.res.ResourcesCompat
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -34,7 +35,11 @@ class TagsFragment : BaseBindModelFragment<FragmentTagsBinding, TagsVM>() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        viewModel.startConfigureLoad()
+        (activity as AppCompatActivity).supportActionBar?.title = getString(R.string.tags_title)
+
+        if (viewModel.tags == null) {
+            viewModel.startConfigureLoad()
+        }
         viewModel.listenConnectivity()
 
         initAdapter()
@@ -56,7 +61,7 @@ class TagsFragment : BaseBindModelFragment<FragmentTagsBinding, TagsVM>() {
         tagsPagedListAdapter.onItemClickListener =
             object : BasePagedListAdapter.OnItemClickListener {
                 override fun onItemClick(position: Int) {
-                    viewModel.tags?.value?.get(position)?.name?.let {
+                    tagsPagedListAdapter.currentList?.get(position)?.name?.let {
                         replaceFragment(
                             R.id.fragmentContainer,
                             QuestionsFragment.newInstance(it),

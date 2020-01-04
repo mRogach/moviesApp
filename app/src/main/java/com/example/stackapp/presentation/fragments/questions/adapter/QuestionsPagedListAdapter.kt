@@ -1,8 +1,12 @@
 package com.example.stackapp.presentation.fragments.questions.adapter
 
+import android.content.Context
 import android.view.View
 import android.widget.TextView
+import androidx.appcompat.widget.AppCompatImageView
 import androidx.recyclerview.widget.DiffUtil
+import com.bumptech.glide.Glide
+import com.bumptech.glide.request.RequestOptions
 import com.example.stackapp.R
 import com.example.stackapp.data.models.question.Question
 import com.example.stackapp.presentation.basics.adapter.BaseListenerViewHolder
@@ -14,7 +18,7 @@ import javax.inject.Inject
  * Mykhailo on 12/12/2019.
  */
 
-class QuestionsPagedListAdapter @Inject constructor(diffUtilCallback: DiffUtil.ItemCallback<Question>) :
+class QuestionsPagedListAdapter @Inject constructor(diffUtilCallback: DiffUtil.ItemCallback<Question>, val context: Context) :
     BasePagedListAdapter<Question, QuestionsPagedListAdapter.QuestionViewHolder>(diffUtilCallback) {
 
     override fun getItemViewId() = R.layout.item_question
@@ -24,20 +28,24 @@ class QuestionsPagedListAdapter @Inject constructor(diffUtilCallback: DiffUtil.I
     inner class QuestionViewHolder(itemView: View?) : BaseListenerViewHolder<Question>(itemView) {
 
         private val tvTitle by lazy { itemView?.findViewById(R.id.tvTitle) as TextView? }
-//        private val ivMovieBackground by lazy { itemView?.findViewById(R.id.ivMovieBackground) as ImageView? }
+        private val tvOwnerName by lazy { itemView?.findViewById(R.id.tvOwnerName) as TextView? }
+        private val tvDate by lazy { itemView?.findViewById(R.id.tvDate) as TextView? }
+        private val ivOwnerPhoto by lazy { itemView?.findViewById(R.id.ivOwnerPhoto) as AppCompatImageView? }
 
         override fun onBind(item: Question, onItemClickListener: OnItemClickListener?) {
+            tvOwnerName?.text = item.owner.displayName
             tvTitle?.text = item.title
-//            tvRating?.text = item.voteAverage.toString()
-//            ivMovieBackground?.let {
-//
-//                Glide.with(it.context)
-//                    .load("https://image.tmdb.org/t/p/w500/" + item.backdropPath)
-//                    .centerCrop()
-//                    .diskCacheStrategy(DiskCacheStrategy.NONE)
-//                    .skipMemoryCache(true)
-//                    .into(it)
-//            }
+            tvDate?.text = item.dateForUI
+
+            ivOwnerPhoto?.let {
+                Glide.with(context)
+                    .load(item.owner.profileImage)
+                    .apply(
+                        RequestOptions.circleCropTransform()
+                            .error(R.drawable.ic_account_circle_blue)
+                            .placeholder(R.drawable.ic_account_circle_blue))
+                    .into(it)
+            }
         }
 
     }

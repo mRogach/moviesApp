@@ -12,7 +12,8 @@ data class Question(
     val title: String,
     val owner: Owner,
     @SerializedName("creation_date")
-    val creationDate: Long
+    val creationDate: Long,
+    var dateForUI: String
 )
 
 data class Owner(

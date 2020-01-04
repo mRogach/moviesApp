@@ -2,6 +2,7 @@ package com.example.stackapp.presentation.fragments.questions
 
 import android.os.Bundle
 import android.view.View
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.res.ResourcesCompat
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -49,6 +50,8 @@ class QuestionsFragment : BaseBindModelFragment<FragmentQuestionsBinding, Questi
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        (activity as AppCompatActivity).supportActionBar?.title = getString(R.string.questions_title)
 
         viewModel.startConfigureLoad()
         viewModel.listenConnectivity()
