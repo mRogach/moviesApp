@@ -1,7 +1,7 @@
 package com.example.stackapp.presentation.fragments.tags.adapter
 
 import androidx.recyclerview.widget.DiffUtil
-import com.example.stackapp.data.models.Tag
+import com.example.stackapp.data.models.tag.Tag
 import javax.inject.Inject
 
 /**

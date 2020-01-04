@@ -19,7 +19,6 @@ class MainActivity : BaseActivity() {
         super.onCreate(savedInstanceState)
 
         setSupportActionBar(toolbar)
-        supportActionBar?.title = "Popular films"
 
         if (savedInstanceState == null) {
             replaceFragment(R.id.fragmentContainer, TagsFragment(), false)

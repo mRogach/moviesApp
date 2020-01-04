@@ -17,6 +17,7 @@ package com.example.stackapp.presentation.application.di.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import com.example.stackapp.presentation.fragments.questions.QuestionsVM
 import com.example.stackapp.presentation.fragments.tags.TagsVM
 import dagger.Binds
 import dagger.Module
@@ -36,4 +37,9 @@ abstract class ViewModelModule {
     @IntoMap
     @ViewModelKey(TagsVM::class)
     abstract fun bindsTagsVM(tagsVM: TagsVM): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(QuestionsVM::class)
+    abstract fun bindsQuestionsVM(questionsVM: QuestionsVM): ViewModel
 }

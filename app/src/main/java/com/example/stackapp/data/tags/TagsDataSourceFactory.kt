@@ -3,7 +3,7 @@ package com.example.stackapp.data.tags
 import androidx.lifecycle.MutableLiveData
 import androidx.paging.DataSource
 import com.example.stackapp.data.api.StackAppRestClient
-import com.example.stackapp.data.models.Tag
+import com.example.stackapp.data.models.tag.Tag
 import javax.inject.Inject
 
 /**

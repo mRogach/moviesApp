@@ -4,9 +4,12 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.annotation.IdRes
 import androidx.annotation.LayoutRes
 import androidx.databinding.DataBindingUtil
 import androidx.databinding.ViewDataBinding
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.ViewModelProvider
 import com.example.stackapp.BR
 import dagger.android.support.DaggerFragment
@@ -35,7 +38,11 @@ abstract class BaseBindModelFragment<T : ViewDataBinding, M : BaseViewModel> : D
         viewModel = initViewModel()
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         binding = DataBindingUtil.inflate(inflater, getLayoutId(), container, false)
         performDataBinding()
         return binding.root
@@ -45,6 +52,26 @@ abstract class BaseBindModelFragment<T : ViewDataBinding, M : BaseViewModel> : D
         binding.lifecycleOwner = viewLifecycleOwner
         binding.setVariable(BR.viewModel, viewModel)
         binding.executePendingBindings()
+    }
+
+    protected fun replaceFragment(
+        @IdRes containerId: Int, fragmentToShow: Fragment?,
+        backSack: Boolean
+    ) {
+        if (fragmentToShow != null) {
+            activity?.supportFragmentManager?.popBackStack(
+                null,
+                FragmentManager.POP_BACK_STACK_INCLUSIVE
+            )
+            activity?.supportFragmentManager?.let {
+                val ft = it.beginTransaction()
+                    .replace(containerId, fragmentToShow, fragmentToShow::class.java.simpleName)
+                if (backSack)
+                    ft.addToBackStack(fragmentToShow::class.java.simpleName)
+                ft.commitAllowingStateLoss()
+            }
+
+        }
     }
 
 }

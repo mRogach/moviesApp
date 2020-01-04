@@ -1,11 +1,11 @@
-package com.example.stackapp.data.tags
+package com.example.stackapp.data.questions
 
 import androidx.lifecycle.MutableLiveData
 import androidx.paging.PageKeyedDataSource
 import com.example.stackapp.data.api.ErrorsHandler
 import com.example.stackapp.data.api.StackAppRestClient
 import com.example.stackapp.data.models.ResultResponse
-import com.example.stackapp.data.models.tag.Tag
+import com.example.stackapp.data.models.question.Question
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
@@ -16,10 +16,11 @@ import io.reactivex.schedulers.Schedulers
  * Mykhailo on 12/12/2019.
  */
 
-class TagsDataSource constructor(
-    private val stackAppRestClient: StackAppRestClient
+class QuestionsDataSource constructor(
+    private val stackAppRestClient: StackAppRestClient,
+    val tag: String
 ) :
-    PageKeyedDataSource<Int, Tag>() {
+    PageKeyedDataSource<Int, Question>() {
 
     var initialLoadStateLiveData = MutableLiveData<ResultResponse.Status>()
     var initialLoadErrorLiveData = MutableLiveData<Triple<ErrorsHandler.ApiError, String?, Int?>>()
@@ -28,16 +29,16 @@ class TagsDataSource constructor(
     private val compositeDisposable = CompositeDisposable()
     private var page: Int = 1
 
-    private fun onTagsFetched(tags: List<Tag>, callback: LoadInitialCallback<Int, Tag>) {
+    private fun onQuestionsFetched(questions: List<Question>, callback: LoadInitialCallback<Int, Question>) {
         initialLoadStateLiveData.postValue(ResultResponse.Status.SUCCESS)
         page = page.inc()
-        callback.onResult(tags, page, page.dec())
+        callback.onResult(questions, page, page.dec())
     }
 
-    private fun onNextTagsFetched(tags: List<Tag>, callback: LoadCallback<Int, Tag>) {
+    private fun onNextQuestionsFetched(questions: List<Question>, callback: LoadCallback<Int, Question>) {
         paginatedNetworkStateLiveData.postValue(ResultResponse.Status.SUCCESS)
         page = page.inc()
-        callback.onResult(tags, page)
+        callback.onResult(questions, page)
     }
 
     override fun invalidate() {
@@ -53,11 +54,11 @@ class TagsDataSource constructor(
 
     override fun loadInitial(
         params: LoadInitialParams<Int>,
-        callback: LoadInitialCallback<Int, Tag>
+        callback: LoadInitialCallback<Int, Question>
     ) {
         initialLoadStateLiveData.postValue(ResultResponse.Status.LOADING)
 
-        val loadFirstTags = getTags()
+        val loadFirstQuestions = getQuestions()
                 .subscribe {
                     when (it.status) {
                         ResultResponse.Status.ERROR -> {
@@ -69,18 +70,18 @@ class TagsDataSource constructor(
                             initialLoadStateLiveData.postValue(ResultResponse.Status.ERROR)
                         }
                         ResultResponse.Status.SUCCESS -> {
-                            it.data?.let { it1 -> onTagsFetched(it1, callback) }
+                            it.data?.let { it1 -> onQuestionsFetched(it1, callback) }
                             initialLoadStateLiveData.postValue(ResultResponse.Status.SUCCESS)
                         }
                     }
                 }
-        compositeDisposable.add(loadFirstTags)
+        compositeDisposable.add(loadFirstQuestions)
     }
 
-    override fun loadAfter(params: LoadParams<Int>, callback: LoadCallback<Int, Tag>) {
+    override fun loadAfter(params: LoadParams<Int>, callback: LoadCallback<Int, Question>) {
         paginatedNetworkStateLiveData.postValue(ResultResponse.Status.LOADING)
 
-        val loadNextTags = getTags()
+        val loadNextQuestions = getQuestions()
                 .subscribe {
                     when (it.status) {
                         ResultResponse.Status.ERROR -> nextLoadErrorLiveData.postValue(it.error?.let { it1 ->
@@ -89,21 +90,21 @@ class TagsDataSource constructor(
                             )
                         })
                         ResultResponse.Status.SUCCESS -> {
-                            it.data?.let { it1 -> onNextTagsFetched(it1, callback) }
+                            it.data?.let { it1 -> onNextQuestionsFetched(it1, callback) }
                             paginatedNetworkStateLiveData.postValue(ResultResponse.Status.SUCCESS)
                         }
                     }
                 }
-        compositeDisposable.add(loadNextTags)
+        compositeDisposable.add(loadNextQuestions)
     }
 
-    private fun getTags(): Observable<ResultResponse<List<Tag>>> {
-        return stackAppRestClient.stackService.getTags(page, "stackoverflow", "desc")
+    private fun getQuestions(): Observable<ResultResponse<List<Question>>> {
+        return stackAppRestClient.stackService.getQuestions(tag, page, "stackoverflow")
             .map { t -> ResultResponse.success(t.items) }
             .onErrorReturn { t -> ResultResponse.error(t) }
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
     }
 
-    override fun loadBefore(params: LoadParams<Int>, callback: LoadCallback<Int, Tag>) {}
+    override fun loadBefore(params: LoadParams<Int>, callback: LoadCallback<Int, Question>) {}
 }

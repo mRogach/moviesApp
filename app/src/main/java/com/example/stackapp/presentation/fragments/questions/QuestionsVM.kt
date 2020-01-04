@@ -1,4 +1,4 @@
-package com.example.stackapp.presentation.fragments.tags
+package com.example.stackapp.presentation.fragments.questions
 
 import android.content.Context
 import android.widget.Toast
@@ -8,8 +8,8 @@ import androidx.paging.LivePagedListBuilder
 import androidx.paging.PagedList
 import com.example.stackapp.data.api.ErrorsHandler
 import com.example.stackapp.data.models.ResultResponse
-import com.example.stackapp.data.models.tag.Tag
-import com.example.stackapp.data.tags.TagsDataSourceFactory
+import com.example.stackapp.data.models.question.Question
+import com.example.stackapp.data.questions.QuestionsDataSourceFactory
 import com.example.stackapp.presentation.basics.BaseViewModel
 import com.github.pwittchen.reactivenetwork.library.rx2.ReactiveNetwork
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -21,35 +21,37 @@ import javax.inject.Inject
  * Mykhailo on 12/12/2019.
  */
 
-class TagsVM @Inject constructor(
+class QuestionsVM @Inject constructor(
     val context: Context,
-    val tagsDataSourceFactory: TagsDataSourceFactory
+    val questionsDataSourceFactory: QuestionsDataSourceFactory
 ) : BaseViewModel(context) {
 
-    var tags: LiveData<PagedList<Tag>>? = null
+    var questions: LiveData<PagedList<Question>>? = null
+    var selectedTag: String = ""
 
     fun startConfigureLoad() {
         val config = PagedList.Config.Builder()
             .setPageSize(20)
             .setInitialLoadSizeHint(20)
             .build()
-        tags = LivePagedListBuilder(tagsDataSourceFactory, config).build()
+        questions = LivePagedListBuilder(questionsDataSourceFactory, config).build()
+        questionsDataSourceFactory.selectedTag = selectedTag
     }
 
     fun initialLoadState(): MutableLiveData<ResultResponse.Status>? {
-        return tagsDataSourceFactory.sourceLiveData.value?.initialLoadStateLiveData
+        return questionsDataSourceFactory.sourceLiveData.value?.initialLoadStateLiveData
     }
 
     fun getInitLoadError(): MutableLiveData<Triple<ErrorsHandler.ApiError, String?, Int?>>? {
-        return tagsDataSourceFactory.sourceLiveData.value?.initialLoadErrorLiveData
+        return questionsDataSourceFactory.sourceLiveData.value?.initialLoadErrorLiveData
     }
 
     fun getNextLoadError(): MutableLiveData<Triple<ErrorsHandler.ApiError, String?, Int?>>? {
-        return tagsDataSourceFactory.sourceLiveData.value?.nextLoadErrorLiveData
+        return questionsDataSourceFactory.sourceLiveData.value?.nextLoadErrorLiveData
     }
 
     fun retry() {
-        tagsDataSourceFactory.sourceLiveData.value?.invalidate()
+        questionsDataSourceFactory.sourceLiveData.value?.invalidate()
         startConfigureLoad()
         isNetworkError.value = false
         isLoading.value = true

@@ -2,7 +2,7 @@ package com.example.stackapp.presentation.application.di
 
 import androidx.paging.DataSource
 import androidx.recyclerview.widget.DiffUtil
-import com.example.stackapp.data.models.Tag
+import com.example.stackapp.data.models.tag.Tag
 import com.example.stackapp.data.tags.TagsDataSourceFactory
 import com.example.stackapp.presentation.basics.adapter.BasePagedListAdapter
 import com.example.stackapp.presentation.fragments.tags.adapter.TagsDiffCallback

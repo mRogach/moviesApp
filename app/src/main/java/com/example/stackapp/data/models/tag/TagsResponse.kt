@@ -1,4 +1,4 @@
-package com.example.stackapp.data.models
+package com.example.stackapp.data.models.tag
 
 import com.google.gson.annotations.SerializedName
 

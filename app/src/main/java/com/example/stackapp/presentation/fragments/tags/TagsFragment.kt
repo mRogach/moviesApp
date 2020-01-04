@@ -4,12 +4,13 @@ import android.os.Bundle
 import android.view.View
 import androidx.core.content.res.ResourcesCompat
 import androidx.lifecycle.Observer
-import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.stackapp.R
 import com.example.stackapp.databinding.FragmentTagsBinding
 import com.example.stackapp.presentation.basics.BaseBindModelFragment
+import com.example.stackapp.presentation.basics.adapter.BasePagedListAdapter
 import com.example.stackapp.presentation.basics.createViewModel
+import com.example.stackapp.presentation.fragments.questions.QuestionsFragment
 import com.example.stackapp.presentation.fragments.tags.adapter.TagsPagedListAdapter
 import kotlinx.android.synthetic.main.fragment_tags.*
 import javax.inject.Inject
@@ -33,17 +34,14 @@ class TagsFragment : BaseBindModelFragment<FragmentTagsBinding, TagsVM>() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        if (savedInstanceState == null) {
-            viewModel.startConfigureLoad()
-            viewModel.listenConnectivity()
-        }
+        viewModel.startConfigureLoad()
+        viewModel.listenConnectivity()
 
         initAdapter()
         observe()
     }
 
     private fun initAdapter() {
-        rvTags.addItemDecoration(DividerItemDecoration(context, DividerItemDecoration.VERTICAL))
         rvTags.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
         rvTags.adapter = tagsPagedListAdapter
         srlListRefresh.apply {
@@ -55,14 +53,29 @@ class TagsFragment : BaseBindModelFragment<FragmentTagsBinding, TagsVM>() {
                 viewModel.retry()
             }
         }
+        tagsPagedListAdapter.onItemClickListener =
+            object : BasePagedListAdapter.OnItemClickListener {
+                override fun onItemClick(position: Int) {
+                    viewModel.tags?.value?.get(position)?.name?.let {
+                        replaceFragment(
+                            R.id.fragmentContainer,
+                            QuestionsFragment.newInstance(it),
+                            true
+                        )
+                    }
+                }
+            }
     }
 
     private fun observe() {
         viewModel.tags?.observe(this@TagsFragment, Observer { tagsPagedListAdapter.submitList(it) })
         viewModel.tagsDataSourceFactory.sourceLiveData.observe(this@TagsFragment, Observer {
-            viewModel.initialLoadState()?.observe(this, Observer { t -> viewModel.observeInitCommentsState(t) })
-            viewModel.getInitLoadError()?.observe(this, Observer { t -> viewModel.observeInitError(t) })
-            viewModel.getNextLoadError()?.observe(this, Observer { t -> viewModel.observeNextError(t) })
+            viewModel.initialLoadState()
+                ?.observe(this, Observer { t -> viewModel.observeInitCommentsState(t) })
+            viewModel.getInitLoadError()
+                ?.observe(this, Observer { t -> viewModel.observeInitError(t) })
+            viewModel.getNextLoadError()
+                ?.observe(this, Observer { t -> viewModel.observeNextError(t) })
         })
     }
 }
